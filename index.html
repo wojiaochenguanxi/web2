@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+	.line{
+		height: 20px;
+		background-color: rgba(204,204,204);
+		position: relative;
+		top: 80px;
+	}
+	#container{
+		width: 1100px;
+		margin: 0 auto;
+		height: 20px;
+		overflow: hidden;
+		position: relative;
+	}
+	.line>img{
+		float: left;
+		position: relative;
+		left: 190px;
+		top: 2px;
+	}
+	#container>p{
+		width: 450px;
+		color: red;
+		position: relative;
+		float: left;
+		margin: 0px;
+		margin-left: 1150px;
+	}
+	.box{
+		width: 1200px;
+		height: 385px;
+		margin: 100px auto;
+		overflow: hidden;
+		position: relative;
+	}
+	.slider{
+		width: 8400px;
+		position: absolute;
+		left: -1200px;
+	}
+	.slide{
+		width: 1200px;
+		overflow: hidden;
+		float: left;
+	}
+	.box>span{
+		display: block;
+		width: 30px;
+		height: 50px;
+		text-align: center;
+		cursor: pointer;
+		color: white;
+		top: 175px;
+		line-height: 50px;
+		background: rgb(255,0,0);
+		font-size: 30px;
+		position: absolute;
+		opacity: 0;
+	}
+	#left{
+		left: 30px;
+	}
+	#right{
+		right: 30px;
+	}
+	.point{
+		position: absolute;
+		left: 500px;
+		bottom: 20px;
+	}
+	.point>li{
+		float: left;
+		width: 20px;
+		height: 20px;
+		background: #ccc;
+		cursor: pointer;
+		margin: 0 10px;
+		border-radius: 50%;
+		list-style: none;
+		text-align: center;
+	}
+	.point .red{
+		background: red;
+		color: white;
+	}
+</style>
+<script src = "animate.js"></script>
+</head>
+<body>
+	<div class = "line" id = "line">
+		<img src="a15.png">
+		<div id = "container"><p id = "text">[温馨提示]最近有不少不法分子在网上骗人，请大家注意!!!</p></div>
+	</div>
+	<div class = "box" id = "box">
+		<div class = "slider" id = "slider">
+			<div class = "slide"><img src = "b5.png"></div>
+			<div class = "slide"><img src = "b1.png"></div>
+			<div class = "slide"><img src = "b2.png"></div>
+			<div class = "slide"><img src = "b3.png"></div>
+			<div class = "slide"><img src = "b4.png"></div>
+			<div class = "slide"><img src = "b5.png"></div>
+			<div class = "slide"><img src = "b1.png"></div>
+		</div>
+		<span id = "left"><</span>
+		<span id = "right">></span>
+		<ul class = "point" id = "point">
+			<li class = "red">1</li>
+			<li>2</li>
+			<li>3</li>
+			<li>4</li>
+			<li>5</li>
+		</ul>
+	</div>
+	<script>
+		var box = document.getElementById('box');
+		var list = document.getElementById('point').children;
+		var slider = document.getElementById('slider');
+		var left = document.getElementById('left');
+		var right = document.getElementById('right');
+		var text = document.getElementById("text");
+		var index = 1;
+		var timer;
+		var isMoving = false;
+
+		setInterval(function(){
+			var textstyle = getComputedStyle(text);
+			var textRight = parseInt(textstyle["right"]);
+			text.style.right  =(textRight + 1) + "px";
+			if(textRight === 1550){
+				text.style.right = 0+"px";
+			}
+		},10);
+		//下一张
+		function next(){
+			if(isMoving){
+				return;
+			}
+			isMoving = true;
+			index++;
+			change();
+			animate(slider,{left:-1200*index},function(){
+				if(index === 6){
+					slider.style.left = "-1200px";
+					index = 1;
+				}
+				isMoving = false;
+			});
+		}
+		//上一张
+		function perv(){
+			if(isMoving){
+				return;
+			}
+			index--;
+			change();
+			animate(slider,{left:-1200*index},function(){
+				if(index === 0){
+					slider.style.left = "-6000px";
+					index = 5;
+				}
+				isMoving = false;
+			});
+		}
+		var timer = setInterval(next,2000);
+		//鼠标划入
+		box.onmouseover = function(){
+			animate(left,{opacity:50});
+			animate(right,{opacity:50});
+			clearInterval(timer);
+		}
+		//鼠标划出
+		box.onmouseout = function(){
+			animate(left,{opacity:0});
+			animate(right,{opacity:0});
+			timer = setInterval(next,2000);
+		}
+		right.onclick = next;
+		left.onclick = perv;
+		for(var i = 0;i<list.length;i++){
+			list[i].idx = i;
+			list[i].onclick = function(){
+				index = this.idx + 1;
+				change();
+				animate(slider,{left:-1200*index});
+			}
+		}
+		function change(){
+			for(var i = 0;i<list.length;i++){
+				list[i].className = '';
+			}
+			if(index === 6){
+				list[0].className = 'red';
+			}
+			else if(index === 0){
+				list[4].classNmae = 'red';
+			}
+			else{
+				list[index - 1].className = 'red';
+			}
+		}
+	</script>
+</body>
+</html>
